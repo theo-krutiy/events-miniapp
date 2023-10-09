@@ -31,23 +31,23 @@ function Inner({ WebApp, children }){
   const [eventsJoined, setEventsJoined] = useState(null)
   const [eventsCreated, setEventsCreated] = useState(null)
   const [validData, setValidData] = useState(null)
-  const initData = WebApp.initData
+
   useEffect(() => {
     async function startFetching() {
       setEventsJoined(null)
       setEventsCreated(null)
       setValidData(null)
-      
-      if (initData) {
+      if (WebApp) {      
         const queryParams = {
-          init_data: initData
+          init_data: WebApp.initData
         }
         let result = await validateData(JSON.stringify(queryParams))
-        if (!ignore) {
-          setValidData(result)
-        }
         let data_is_valid = result.data_is_valid
+
         if (data_is_valid){
+          if (!ignore) {
+            setValidData(result.parsed_data)
+          }
           let user_id = result.parsed_data.user.id
           result = await getEventsJoined(user_id)
           if (!ignore) {
@@ -57,24 +57,26 @@ function Inner({ WebApp, children }){
           if (!ignore) {
             setEventsCreated(result)
           }
-
-      }
-     
-      }
+        } 
+      } 
     }
 
     let ignore = false;
     startFetching();
+
     return () => {
       ignore = true;
     }
-  }, [initData])
+
+  }, [WebApp])
+
+  console.log("valid data", validData)
 
 
   if (validData) {
     // NEEDS_CHANGE
     const userData={
-      user_id: validData.parsed_data.user.id,
+      user_id: validData.user.id,
       eventsJoined: eventsJoined,
       eventsCreated: eventsCreated,
     }
@@ -88,11 +90,6 @@ function Inner({ WebApp, children }){
           </TelegramContext.Provider>
         </LocalizationProvider>
       </>
-    )
-  }
-  else {
-    return(
-      <h1>Invalid request</h1>
     )
   }
 }

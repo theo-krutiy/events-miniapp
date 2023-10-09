@@ -147,7 +147,7 @@ export async function validateData(queryParams){
   const url = "http://backend/utils/valid_data?" 
   + new URLSearchParams(JSON.parse(queryParams))
 
-  const response = await fetch(url)
+  const response = await fetch(url, {cache: "no-store"})
 
   if (response.status === 200) {
     const result = await response.json()
