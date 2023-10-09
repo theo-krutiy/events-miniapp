@@ -251,20 +251,20 @@ async def get_participants(event_id: int):
 
 @router.get("/utils/valid_data", status_code=status.HTTP_200_OK)
 async def validate_data(init_data: str):
-    parsed_data = data_check_string_todict(init_data)
-    secret_key = hmac.digest(
-        key=b"WebAppData",
-        msg=BOT_TOKEN.encode(),
-        digest=hashlib.sha256
-    )
-    mac = hmac.new(
-        key=secret_key,
-        digestmod=hashlib.sha256
-    )
-    mac.update(init_data.encode())
-
     data_is_valid = False
+    parsed_data = {}
     try:
+        parsed_data = data_check_string_todict(init_data)
+        secret_key = hmac.digest(
+            key=b"WebAppData",
+            msg=BOT_TOKEN.encode(),
+            digest=hashlib.sha256
+        )
+        mac = hmac.new(
+            key=secret_key,
+            digestmod=hashlib.sha256
+        )
+        mac.update(init_data.encode())
         data_is_valid = hmac.compare_digest(mac.hexdigest(), parsed_data["hash"])
     except:
         pass
