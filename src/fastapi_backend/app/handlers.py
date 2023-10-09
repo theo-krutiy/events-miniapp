@@ -262,7 +262,10 @@ async def validate_data(init_data: str):
         digestmod=hashlib.sha256
     )
     mac.update(init_data.encode())
-    data_is_valid = hmac.compare_digest(mac.hexdigest(), parsed_data["hash"])
+
+    data_is_valid = False
+    if "hash" in parsed_data:
+        data_is_valid = hmac.compare_digest(mac.hexdigest(), parsed_data["hash"])
 
     return {
         "data_is_valid": data_is_valid,
