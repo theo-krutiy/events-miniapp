@@ -35,3 +35,5 @@ services:
      volumes:
        - /etc/ssl:/etc/nginx/ssl:ro
      restart: always
+     depends_on:
+       - frontend
