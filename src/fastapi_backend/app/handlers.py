@@ -253,10 +253,10 @@ async def get_participants(event_id: int):
 async def validate_data(init_data: str):
     data_is_valid = False
     parsed_data = {}
-    try:
-        data_is_valid, parsed_data = parse_validate_init_data(init_data)
-    except:
-        pass
+    # try:
+    data_is_valid, parsed_data = parse_validate_init_data(init_data)
+    # except:
+    #     pass
 
     if not data_is_valid:
         raise HandlerException(
