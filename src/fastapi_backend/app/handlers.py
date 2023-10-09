@@ -11,7 +11,7 @@ from sqlalchemy.exc import DBAPIError
 from pydantic import BaseModel, Field
 
 from .db_schema import events_table, event_participants
-from .utils import init_data_to_dcs
+from .utils import parse_validate_init_data
 
 
 BOT_TOKEN = "6457589571:AAFjAPcwUrrySkEVzaWsbszMn3zdjSqI-IY"
@@ -254,18 +254,7 @@ async def validate_data(init_data: str):
     data_is_valid = False
     parsed_data = {}
     try:
-        dcs = init_data_to_dcs(init_data)
-        secret_key = hmac.digest(
-            key=b"WebAppData",
-            msg=BOT_TOKEN.encode(),
-            digest=hashlib.sha256
-        )
-        mac = hmac.new(
-            key=secret_key,
-            digestmod=hashlib.sha256
-        )
-        mac.update(dcs.encode())
-        data_is_valid = hmac.compare_digest(mac.hexdigest(), parsed_data["hash"])
+        data_is_valid, parsed_data = parse_validate_init_data(init_data)
     except:
         pass
 
