@@ -1,13 +1,11 @@
-import json
+import urllib.parse
 
-def data_check_string_todict(dcs):
-    dcs_dict = {}
-    for arg in dcs.split("\n"):
-        k,v = arg.split("=", 1)
-        dcs_dict[k] = v
-        try:
-            dcs_dict[k] = json.loads(v)
-        except: None
+def init_data_to_dcs(init_data: str):
+    init_data_parsed = urllib.parse.parse_qs(init_data)
+    res = []
+    for k, v in sorted(init_data_parsed.items(), key=lambda x: x[0]):
+        if k != "hash":
+            res.append("=".join((k, v[0])))
 
-    return dcs_dict
+    return "\n".join(res)
 
