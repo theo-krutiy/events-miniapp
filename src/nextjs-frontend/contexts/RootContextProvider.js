@@ -90,4 +90,9 @@ function Inner({ WebApp, children }){
       </>
     )
   }
+  else {
+    return(
+      <h1>Invalid request</h1>
+    )
+  }
 }

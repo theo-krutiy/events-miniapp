@@ -30,12 +30,18 @@ services:
       - backend
 
   nginx:
-     build: ./nginx
-     ports:
-       - "80:80"
-       - "443:443"
-     volumes:
-       - /etc/ssl:/etc/nginx/ssl:ro
-     restart: always
-     depends_on:
-       - frontend
+   build: ./nginx
+   ports:
+     - "80:80"
+     - "443:443"
+   volumes:
+     - /etc/ssl:/etc/nginx/ssl:ro
+   restart: always
+   depends_on:
+     - frontend
+
+  tg_bot:
+    build: ./tg_bot
+    ports:
+      - "88:80"
+
