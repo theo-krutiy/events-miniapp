@@ -267,6 +267,9 @@ async def validate_data(init_data: str):
         mac.update(init_data.encode())
         data_is_valid = hmac.compare_digest(mac.hexdigest(), parsed_data["hash"])
     except:
+        pass
+
+    if not data_is_valid:
         raise HandlerException(
             message="tg_init_data_is_invalid",
             http_code=403
