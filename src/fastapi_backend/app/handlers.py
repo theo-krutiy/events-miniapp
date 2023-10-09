@@ -264,8 +264,10 @@ async def validate_data(init_data: str):
     mac.update(init_data.encode())
 
     data_is_valid = False
-    if "hash" in parsed_data:
+    try:
         data_is_valid = hmac.compare_digest(mac.hexdigest(), parsed_data["hash"])
+    except:
+        pass
 
     return {
         "data_is_valid": data_is_valid,
