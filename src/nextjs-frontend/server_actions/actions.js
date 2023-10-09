@@ -153,4 +153,10 @@ export async function validateData(queryParams){
     const result = await response.json()
     return result
   }
+  else {
+    return {
+        "data_is_valid": false,
+        "parsed_data": {}
+    } 
+  }
 }
