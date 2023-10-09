@@ -261,14 +261,13 @@ async def validate_data(init_data: str):
         key=secret_key,
         digestmod=hashlib.sha256
     )
-    mac.update(init_data)
+    mac.update(init_data.encode())
     data_is_valid = hmac.compare_digest(mac.hexdigest(), parsed_data["hash"])
 
     return {
         "data_is_valid": data_is_valid,
         "parsed_data": parsed_data
     }
-
 
 class UpdatedHashtags(BaseModel):
     hashtags: List[str]
