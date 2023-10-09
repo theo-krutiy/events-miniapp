@@ -8,10 +8,6 @@ import RootContextProvider from '@/contexts/RootContextProvider';
 
 
 export default function RootLayout({ children }) {
-  const WebApp = {
-    initData: 'auth_date=<auth_date>\nquery_id=<query_id>\nuser=<user>'
-  } 
-
   return (
     <html lang="en">
       <head>
@@ -20,7 +16,7 @@ export default function RootLayout({ children }) {
       </head>
 
       <body>
-          <RootContextProvider WebApp={WebApp}>
+          <RootContextProvider WebApp={window.Telegram.WebApp}>
             {children}
           </RootContextProvider>
       </body>
