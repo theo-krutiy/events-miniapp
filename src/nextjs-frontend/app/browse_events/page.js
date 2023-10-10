@@ -17,14 +17,14 @@ import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { TelegramContext } from '@/contexts/TelegramContext';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 
 export default function Page(){
   const router = useRouter()
   const WebApp = useContext(TelegramContext)
   WebApp.BackButton.show()
-  // WebApp.BackButton.onClick(() => router.push('/'))
+  WebApp.BackButton.onClick(() => router.push('/'))
   
   const categories = useContext(CategoriesContext)
   

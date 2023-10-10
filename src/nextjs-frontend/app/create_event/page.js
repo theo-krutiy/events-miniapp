@@ -7,14 +7,14 @@ import { experimental_useFormState as useFormState } from 'react-dom'
 import { createEvent } from '@/server_actions/actions.js';
 import { useState, useContext} from 'react'
 import { TelegramContext } from '@/contexts/TelegramContext';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 
 export default function Page(){
   const router = useRouter()
   const WebApp = useContext(TelegramContext)
   WebApp.BackButton.show()
-  // WebApp.BackButton.onClick(() => router.push('/'))
+  WebApp.BackButton.onClick(() => router.push('/'))
 
   const initialState = {
     error_code: null, 

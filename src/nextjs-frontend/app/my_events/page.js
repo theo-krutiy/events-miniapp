@@ -5,13 +5,13 @@ import { Box, Button, Tab, Tabs, Typography } from '@mui/material'
 import EventList from '@/components/EventList.js';
 import { UserContext } from '@/contexts/UserContext';
 import { TelegramContext } from '@/contexts/TelegramContext';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 export default function Page(){
   const router = useRouter()
   const WebApp = useContext(TelegramContext)
-  // WebApp.BackButton.show()
-  // WebApp.BackButton.onClick(() => router.push('/'))
+  WebApp.BackButton.show()
+  WebApp.BackButton.onClick(() => router.push('/'))
 
   const user = useContext(UserContext)
   const eventsJoined = user.eventsJoined
