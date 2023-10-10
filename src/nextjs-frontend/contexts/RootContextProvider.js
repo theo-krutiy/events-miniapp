@@ -9,13 +9,15 @@ import { getEventsJoined, getEventsCreated } from "@/server_actions/actions.js"
 import { useEffect, useState } from 'react';
 import { TelegramContext } from '@/contexts/TelegramContext';
 import Script from 'next/script'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 
 export default function RootContextProvider({ children }){
   const [WebApp, setWebApp] = useState(null)
   return (
     <>
-      <Script 
+      <Script
         src="https://telegram.org/js/telegram-web-app.js"
         onLoad={()=>{setWebApp(window.Telegram.WebApp)}}
       ></Script>
@@ -70,10 +72,28 @@ function Inner({ WebApp, children }){
 
   }, [WebApp])
 
-
-
   if (validData && WebApp) {
-    
+    const theme = createTheme({
+      palette: {
+        background: {
+          default: WebApp.themeParams.bg_color,
+          paper: WebApp.themeParam.bg_color
+        },
+        primary: {
+          main: WebApp.themeParams.button_color
+        },
+        shape: {
+          borderRadius: 10
+        },
+        text: {
+          primary: WebApp.themeParams.text_color
+        }
+      },
+      typography: {
+        useNextVariants: true,
+      },
+    })
+
     const userData={
       user_id: validData.user.id,
       eventsJoined: eventsJoined,
@@ -81,13 +101,15 @@ function Inner({ WebApp, children }){
     }
     return (
       <>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <TelegramContext.Provider value={WebApp}>
-            <UserContext.Provider value={userData}>
-              {children}
-            </UserContext.Provider>
-          </TelegramContext.Provider>
-        </LocalizationProvider>
+        <ThemeProvider theme={theme}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TelegramContext.Provider value={WebApp}>
+              <UserContext.Provider value={userData}>
+                {children}
+              </UserContext.Provider>
+            </TelegramContext.Provider>
+          </LocalizationProvider>
+        </ThemeProvider>
       </>
     )
   }
