@@ -338,3 +338,4 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,react,nextjs
+/src/fastapi_backend/alembic/
