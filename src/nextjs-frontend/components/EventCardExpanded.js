@@ -6,7 +6,6 @@ import { Stack, Typography, Button, IconButton } from "@mui/material"
 import { formatEventTime } from "./utils";
 import { UserContext } from '@/contexts/UserContext';
 import { addUserToEvent, deleteUserFromEvent, editEvent, deleteEvent } from '@/server_actions/actions';
-import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid'
 import { CategoriesContext } from '@/contexts/CategoriesContext';
 import Chip from '@mui/material/Chip'
@@ -14,34 +13,33 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Drawer from '@mui/material/Drawer'
-import { ConstructionOutlined, Edit } from '@mui/icons-material';
 import EditEventForm from './EditEventForm';
 import { experimental_useFormState as useFormState } from 'react-dom'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
-import { TelegramContext } from '@/contexts/TelegramContext';
 
 
 export default function EventCardExpanded({ event }){
   const categories = useContext(CategoriesContext)
   
   const user = useContext(UserContext)
-  const userAlreadyJoined = true;
-  const userOwns = false;
 
+  let S = new Set(user.eventsJoined.map((e)=>e.event_id))
+  const [userJoined, setUserJoined] = useState(S.has(event.event_id));
 
-  const [eventEditedSuccessfully, setEventEditedSuccessfully] = useState(false)
+  S = new Set(user.eventsCreated.map((e)=>e.event_id))
+  const userOwns = S.has(event.event_id)
   const [isEditing, setIsEditing] = useState(false)
+  const [eventEditedSuccessfully, setEventEditedSuccessfully] = useState(false)
   const [userJoinedSuccessfully, setUserJoinedSuccessfully] = useState(false)
   const [userLeftSuccessfully, setUserLeftSuccessfully] = useState(false)
-  const initialState = {
-    error_code: null, 
-    event_edited: false
-  }
-  const [editingState, formAction] = useFormState(editEvent, initialState)
-  const [editFormSubmitted, setEditFormSubmitted] = useState(false);
-
-  const [userJoined, setUserJoined] = useState(userAlreadyJoined);
+  const [editingState, formAction] = useFormState(
+    editEvent, 
+    {
+      error_code: null,
+      event_edited: false
+    }
+  )
   const [eventInfo, setEventInfo] = useState(
     {
       event_name: event.event_name,
@@ -229,7 +227,6 @@ export default function EventCardExpanded({ event }){
               onClick={()=>{
                 setIsEditing(true)
                 setEventEditedSuccessfully(false)
-                console.log(editingState)
               }}
             > Edit </Button> : <></>
           }
@@ -250,8 +247,6 @@ export default function EventCardExpanded({ event }){
         anchor="bottom"
         open={isEditing}
         onClose={()=>{
-          console.log(editingState.event_edited)
-          console.log(tempEventInfo != eventInfo)
           if (tempEventInfo != eventInfo && editingState.event_edited){
             setEventEditedSuccessfully(true)
             setEventInfo(tempEventInfo)
@@ -267,7 +262,6 @@ export default function EventCardExpanded({ event }){
     
   )
 }
-
 
 
 
@@ -370,7 +364,6 @@ function EventEditor({formAction, isEditing, setIsEditing, setEventEditedSuccess
         anchor="bottom"
         open={isEditing}
         onClose={()=>{
-          console.log(editingState.event_edited)
           if (editingState.event_edited){
             setEventEditedSuccessfully(editingState.event_edited)
             // setEventInfo(tempEventInfo)
