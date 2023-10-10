@@ -9,12 +9,17 @@ import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import Chip from '@mui/material/Chip'
 import { CategoriesContext } from '@/contexts/CategoriesContext';
+import { TelegramContext } from '@/contexts/TelegramContext';
+
 
 
 export default function EventCard( { event } ){
+  const WebApp = useContext(TelegramContext)
+
   const [isExpanded, setIsExpanded] = useState(false)
   const categories = useContext(CategoriesContext)
   const borderWidth = 0
+  const closeCard = () => setIsExpanded(false)
   return (
     <>
       <Card
@@ -72,9 +77,14 @@ export default function EventCard( { event } ){
       </Card>
       <Dialog
         open={isExpanded}
+        onClose={()=>{
+          WebApp.BackButton.offClick(closeCard)
+          WebApp.BackButton.onClick(WebApp.BackButton.prevCallBack)
+
+        }}
         fullScreen
       > 
-        <EventCardExpanded  event={event} closeSelf={()=>{setIsExpanded(false)}} />        
+        <EventCardExpanded  event={event} closeSelf={closeCard} />        
       </Dialog>
     </>
   )

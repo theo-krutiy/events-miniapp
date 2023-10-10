@@ -27,7 +27,6 @@ export default function EventCardExpanded({ event, closeSelf }){
   WebApp.BackButton.show()
   WebApp.BackButton.offClick(WebApp.BackButton.prevCallBack)
   WebApp.BackButton.onClick(closeSelf)
-  WebApp.BackButton.prevCallBack = closeSelf
   
   const categories = useContext(CategoriesContext)
   
