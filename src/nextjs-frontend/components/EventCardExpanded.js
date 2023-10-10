@@ -25,7 +25,9 @@ export default function EventCardExpanded({ event, closeSelf }){
   const WebApp = useContext(TelegramContext)
 
   WebApp.BackButton.show()
+  WebApp.BackButton.offClick(WebApp.BackButton.prevCallBack)
   WebApp.BackButton.onClick(closeSelf)
+  WebApp.BackButton.prevCallBack = closeSelf
   
   const categories = useContext(CategoriesContext)
   
