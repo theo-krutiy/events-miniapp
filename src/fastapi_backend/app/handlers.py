@@ -1,8 +1,6 @@
 import os
 from typing import Optional, List
 from datetime import datetime
-import hmac
-import hashlib
 
 from fastapi import APIRouter, status
 from sqlalchemy import select, insert, update, delete, desc, join
@@ -26,18 +24,43 @@ DB_URL = os.environ.get("DB_URL")
 engine = create_async_engine(DB_URL)
 router = APIRouter()
 
-
+# show_joined_events: showJoinedEvents,
+#         show_past_events: showPastEvents,
+#         show_full_events: showFullEvents,
 @router.get("/events", status_code=status.HTTP_200_OK)
 async def get_events(
         event_location: str,
+        user_id: int,
         category: str = "all",
         order_by: str = "",
         descending: bool = False,
         search_query: str = None,
         page_size: int = 100,
         page_offset: int = 0,
+        show_past_events: bool = False,
+        show_full_events: bool = True,
+        show_joined_events: bool = True,
 ):
-    stmt = select(events_table).where(events_table.c.event_location == event_location)
+    if not show_joined_events:
+        stmt = join(
+            events_table,
+            event_participants,
+            events_table.c.event_id == event_participants.c.event_id
+        )
+        stmt = (
+            select(events_table)
+            .where(event_participants.c.participant_id == user_id)
+            .select_from(stmt)
+        )
+    else:
+        stmt = select(events_table).where(events_table.c.event_location == event_location)
+
+    if not show_past_events:
+        stmt = stmt.where(events_table.c.event_time >= datetime.now())
+
+    if not show_full_events:
+        stmt = stmt.where(events_table.c.curr_participants < events_table.c.max_participants)
+
     if category != "all":
         stmt = stmt.where(events_table.c.category == category)
 
@@ -45,6 +68,7 @@ async def get_events(
         stmt = stmt.where(
             events_table.c.event_name.icontains(search_query)
         )
+
     if order_by != "":
         col = events_table.c[order_by]
         if descending:
