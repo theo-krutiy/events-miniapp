@@ -20,8 +20,6 @@ export default function EventCard( { event } ){
   const categories = useContext(CategoriesContext)
   const borderWidth = 0
   const closeCard = () => {
-    WebApp.BackButton.offClick(WebApp.BackButton.currCallback)
-    WebApp.BackButton.onClick(WebApp.BackButton.prevCallback)
     setIsExpanded(false)
   }
   return (
@@ -30,7 +28,12 @@ export default function EventCard( { event } ){
         variant="outlined"
         sx={{ bgcolor: "primary.default"}}
         >
-        <CardActionArea onClick={()=>{setIsExpanded(true)}}>
+        <CardActionArea onClick={()=>{
+          setIsExpanded(true)
+          WebApp.BackButton.offClick(WebApp.BackButton.prevCallback)
+          WebApp.BackButton.currCallback = closeCard
+          WebApp.BackButton.onClick(closeCard)
+          }}>
           <CardContent sx={{
             padding: 1
           }}
