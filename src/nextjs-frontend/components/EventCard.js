@@ -21,6 +21,8 @@ export default function EventCard( { event } ){
   const borderWidth = 0
   const closeCard = () => {
     setIsExpanded(false)
+    WebApp.BackButton.offClick(WebApp.BackButton.currCallback)
+    WebApp.BackButton.onClick(WebApp.BackButton.prevCallback)
   }
   return (
     <>
