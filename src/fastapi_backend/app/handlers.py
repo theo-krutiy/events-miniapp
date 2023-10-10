@@ -114,7 +114,7 @@ async def get_events_user_created(user_id: int):
 class NewEvent(BaseModel):
     event_name: str = Field(max_length=256)
     description: str = Field(max_length=1024, default="")
-    max_participants: int
+    max_participants: int = Field(gt=0)
     owner_id: int
     event_time: datetime
     event_location: str
