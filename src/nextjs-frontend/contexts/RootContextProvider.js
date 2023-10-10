@@ -77,7 +77,7 @@ function Inner({ WebApp, children }){
       palette: {
         background: {
           default: WebApp.themeParams.bg_color,
-          paper: WebApp.themeParam.bg_color
+          paper: WebApp.themeParams.bg_color
         },
         primary: {
           main: WebApp.themeParams.button_color

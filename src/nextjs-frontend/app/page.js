@@ -1,4 +1,10 @@
+"use client"
+
+
 import { Container, Stack, Button } from '@mui/material'
+import { TelegramContext } from '@/contexts/TelegramContext';
+import { useContext} from 'react'
+
 
 
 function MyButton({ children, ...props}){
@@ -16,8 +22,10 @@ function MyButton({ children, ...props}){
 }
 
 export default function Page( { createEvent }){
-  return (
+  const WebApp = useContext(TelegramContext)
+  WebApp.BackButton.hide()
 
+  return (
       <Stack 
         spacing={2}
         alignItems="center"
