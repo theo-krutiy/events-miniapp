@@ -10,12 +10,12 @@ import SearchBar from './SearchBar';
 import { UserContext } from '@/contexts/UserContext';
 import { getEvents } from "@/server_actions/actions.js";
 import EventList from '@/components/EventList';
-import Drawer from '@mui/material/Drawer'
 import Chip from '@mui/material/Chip'
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 
 export default function Page(){
@@ -204,7 +204,7 @@ function Filter({
   eventLocation, setEventLocation
 }){
   return(
-    <Drawer
+    <SwipeableDrawer
       open={isOpen}
       anchor="bottom"    
       onClose={()=>setIsOpen(false)}
@@ -324,6 +324,6 @@ function Filter({
         >Apply</Button>
       </Grid>
     </Grid>
-    </Drawer>
+    </SwipeableDrawer>
   )
 }
