@@ -16,9 +16,15 @@ import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { TelegramContext } from '@/contexts/TelegramContext';
+import { useRouter } from 'next/router'
 
 
 export default function Page(){
+  const router = useRouter()
+  const WebApp = useContext(TelegramContext)
+  WebApp.BackButton.onClick(() => router.push('/'))
+  
   const categories = useContext(CategoriesContext)
   
   const user = useContext(UserContext)
@@ -206,7 +212,8 @@ function Filter({
   return(
     <SwipeableDrawer
       open={isOpen}
-      anchor="bottom"    
+      anchor="bottom"  
+      disableBackdropTransition  
       onClose={()=>setIsOpen(false)}
     >
     <Grid 

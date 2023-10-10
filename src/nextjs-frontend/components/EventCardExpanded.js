@@ -12,15 +12,21 @@ import Chip from '@mui/material/Chip'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import Drawer from '@mui/material/Drawer'
+import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import EditEventForm from './EditEventForm';
 import { experimental_useFormState as useFormState } from 'react-dom'
 import Alert from '@mui/material/Alert'
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import { TelegramContext } from '@/contexts/TelegramContext';
+import { useRouter } from 'next/router'
 
 
-export default function EventCardExpanded({ event }){
+export default function EventCardExpanded({ event, closeSelf }){
+  const router = useRouter()
+  const WebApp = useContext(TelegramContext)
+  WebApp.BackButton.onClick(closeSelf())
+  
   const categories = useContext(CategoriesContext)
   
   const user = useContext(UserContext)
@@ -193,8 +199,9 @@ export default function EventCardExpanded({ event }){
           </Grid> : <></>
         }
     </Grid>
-    <Drawer
+    <SwipeableDrawer
       anchor="bottom"
+      disableBackdropTransition
       open={isEditing}
       onClose={()=>{
         if (tempEventInfo != eventInfo && editingState.event_edited){
@@ -210,7 +217,7 @@ export default function EventCardExpanded({ event }){
     >
     <h1>Edit event</h1>
     <EditEventForm eventID={event.event_id} eventInfo={eventInfo} formAction={formAction} setTempEventInfo={setTempEventInfo} error_code={editingState.error_code}/>
-    </Drawer>
+    </SwipeableDrawer>
     </>
     
   )

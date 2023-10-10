@@ -13,7 +13,7 @@ const error_code_mapping = {
 }
 
 
-export default function CreateEventForm({ formAction, error_code }) {
+export default function CreateEventForm({ setNewEventName, formAction, error_code }) {
   const [eventName, setEventName] = useState('');
   const [eventCategory, setEventCategory] = useState('');
   const [eventLocation, setEventLocation] = useState('');
@@ -50,6 +50,7 @@ export default function CreateEventForm({ formAction, error_code }) {
           }}
           onChange={(e) => {
           setEventName(e.target.value)
+          setNewEventName(e.target.value)
           }}
           value={eventName}
           autoFocus 

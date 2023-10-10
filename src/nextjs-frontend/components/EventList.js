@@ -1,6 +1,5 @@
 import { Stack } from '@mui/material'
 import EventCard from './EventCard'
-import Divider from '@mui/material/Divider';
 
 
 export default function EventList({ events }){
