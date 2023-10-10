@@ -18,81 +18,78 @@ export default function SearchBar({
   setCategory,
   setSearchQuery,
   setFilterIsOpen,
+  eventLocation
 })
 {
   const categories = useContext(CategoriesContext)
-  const borderWidth = 0
   return (
-    <Card
-      variant="outlined"
-      sx={{borderRadius: 3}}
-    > 
     <Grid
       container
       sx={{
-        padding: 0,
-        border:borderWidth,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        py: 1,
+        rowGap: 1
       }}
+    > 
+    <Grid item container xs={12} sx={{
+      border: 1,
+      borderColor: "text.disabled",
+      borderRadius: 3,
+      alignItems: "center",
+      px: .5,
+      py: .5
+    }}
     >
-      <Grid item xs={1} sx={{
-        border: borderWidth,
-        // height: "100%"
-        }}>
-        <SearchIcon sx={{ml: 1, pt: 0.5}}/>
+      <Grid item xs={1}>
+        <SearchIcon/>
       </Grid>
-      <Grid item xs={10} sx={{border:borderWidth}}>
+      <Grid item xs={7}>
         <Input
-            fullWidth
-            disableUnderline
-            variant="outlined"
-            size="small"
-            placeholder="Search events"
-            onChange={(e) => {
-              setSearchQuery(e.target.value)
-            }}
-            sx={{pt:0.5}}
-          />
+          fullWidth
+          disableUnderline
+          size="small"
+          placeholder="Search events"
+          onChange={(e) => {
+            setSearchQuery(e.target.value)
+          }}
+        />
       </Grid>
-      <Grid item xs={1} sx={{border:borderWidth}}>
-        <IconButton
-            onClick={()=>{setFilterIsOpen(true)}}
-            size="small"
-        >
+      <Grid item container xs={4} justifyContent="flex-end">
+        <Grid item>
+          <IconButton
+              onClick={()=>{setFilterIsOpen(true)}}
+              size="big"
+              color="primary"
+              sx={{
+                border: 1
+              }}
+          >
           <TuneIcon />
-        </IconButton>
+          </IconButton>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sx={{border:borderWidth}}>
-        <Divider></Divider>
-      </Grid>
-      <Grid item xs={3} sx={{border:borderWidth}}>
+          
+    </Grid>
+    <Grid item container  xs={12} >
+      <Stack 
+        direction="row"
+        spacing={.5}
+        alignItems="center"
+        >
         <Chip
           clickable
+          color="secondary"
           onClick={()=>{setCategory(null)}}
           label={
             category ? category : "Choose category"
           }
           icon={categories[category]}
-          sx={{my:0.5}}
         />
-      </Grid>
-      <Grid item xs={9} sx={{
-        border:borderWidth,
-        }}>
-      <Stack 
-      direction="row"
-      spacing={1}
-      >
-        <Typography sx={{
-          py: 1,
-        }}>In: </Typography>
-        <CardActionArea>
-        <Typography>Tbilisi, Georgia</Typography>
-        </CardActionArea>
+        <Typography sx={{pl: .5}}>in</Typography>
+        <Typography>{eventLocation}</Typography>
       </Stack>
-      </Grid>
     </Grid>
-    </Card>
+  </Grid>
   )
 }

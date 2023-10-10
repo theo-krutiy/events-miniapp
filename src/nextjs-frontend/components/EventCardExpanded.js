@@ -16,7 +16,8 @@ import Drawer from '@mui/material/Drawer'
 import EditEventForm from './EditEventForm';
 import { experimental_useFormState as useFormState } from 'react-dom'
 import Alert from '@mui/material/Alert'
-import Box from '@mui/material/Box'
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 
 
 export default function EventCardExpanded({ event }){
@@ -57,7 +58,7 @@ export default function EventCardExpanded({ event }){
     <>
     {
       eventEditedSuccessfully 
-      && <Alert severity="success" onClose={()=>{setEventEditedSuccessfully(false)}}>
+      && <Alert severity="success" sx={{zIndex: 'modal'}} onClose={()=>{setEventEditedSuccessfully(false)}}>
       Changes applied successfully
       </Alert>
     }
@@ -75,111 +76,60 @@ export default function EventCardExpanded({ event }){
     }
     <Grid 
         container 
-        padding={3}
-        alignContent="flex-start"
+        alignContent="center"
         sx={{
-          height: "100%"
+          p:2,
+          rowGap:1
         }}
-      >
-      <Grid
-        item container
-        xs={12}
-      >
-        {/* <Grid
-          item container
-          xs={3}
         >
-          <Grid 
-            item 
-            xs={12}
-            sx={{
-            }}
-          >
-            <Avatar
-              sx={{
-                width: "12vh",
-                height: "12vh",
-                ml: 3
-              }}
-            >ME</Avatar>
-          </Grid>
-          <Grid item xs={12}
-          >
-            <Button fullWidth>Update photo</Button>
-          </Grid>
-        </Grid>       */}
-        
-        <Grid item container xs={12}>
-          <Grid item xs={4}
-              sx={{
-                height: "6vh",
-              }}
-            >
-              <Chip
-                label={eventInfo.category}
-                icon={categories[eventInfo.category]}
-              >
-              </Chip>
-          </Grid>
-          <Grid item xs={8}
-            sx={{            
-              height: "6vh"
-            }}
-          >
-            <Typography noWrap variant="h6">{eventInfo.event_name}</Typography>
-          </Grid>
-          <Grid item xs={4}> 
-
-          </Grid>
-          <Grid 
-            item 
-            xs={3}
-            sx={{            
-              height: "6vh",
-            }}
-          >
-          <Typography variant="h7">{eventInfo.event_location}</Typography>
-          </Grid>
-          <Grid item xs={5}
-            sx={{
-              height: "6vh",
-            }}
-          >
-            <Typography variant="h7">{formatEventTime(eventInfo.event_time)}</Typography>
-          </Grid>
-        </Grid>
+      <Grid item xs={12}>
+        <Typography noWrap variant="h6">{eventInfo.event_name}</Typography>
       </Grid>
+      <Grid item xs={12}>
+        <Chip 
+          label={eventInfo.category}
+          icon={categories[eventInfo.category]}
+        />
+      </Grid>
+      <Grid item container xs={6} sx={{
+        alignItems: "center",
+        columnGap: 0.5
+      }}>
+        <AccessTimeOutlinedIcon />
+        <Typography variant="h7">{formatEventTime(eventInfo.event_time)}</Typography>
+      </Grid>
+      <Grid item container xs={6} sx={{
+        alignItems: "center",
+        columnGap: 0.5
+      }}>
+        <PlaceOutlinedIcon />
+        <Typography variant="h7">{eventInfo.event_location}</Typography>
+      </Grid>
+    
+      <Grid item xs={12}> 
+        {
+          eventInfo.description.length != 0 && 
+          <>
+            <Typography variant="h6">Description:</Typography>
+            <Typography>{eventInfo.description}</Typography>
+          </>
+        }
+      </Grid>
+      
+        {
+          userJoined ? 
+          <Grid item xs={12}>
+            <Button 
+            href={event.chat_link} 
+            fullWidth
+            variant="outlined"
+          >Go to chat</Button> 
+          </Grid> : <></>
+        }
 
-        <Grid item xs={12}
-          sx={{
-            height: "12vh",
-          }}
-        > 
-          {
-            eventInfo.description.length != 0 && 
-            <>
-              <Typography variant="h6">Description:</Typography>
-              <Typography>{eventInfo.description}</Typography>
-            </>
-          }
-          
-
-        </Grid>
-
-        {/* <Grid item xs={12}>
-          <Button fullWidth variant="outlined">
-          View participants ({event.curr_participants}/{eventInfo.max_participants})</Button>
-        </Grid> */}
-
-        <Grid item xs={12}>
-          {
-            userJoined ? <Button href={event.chat_link} fullWidth variant="outlined">Go to chat</Button> : <></>
-          }
-        </Grid>
-
-        <Grid item xs={12}>
-          {
-            !userJoined ? 
+        {
+          !userJoined ? 
+          <Grid item xs={12}>
             <Button 
               fullWidth
               variant="outlined"
@@ -195,13 +145,13 @@ export default function EventCardExpanded({ event }){
               }}
             >
               Join
-            </Button> : <></>
-          }
-        </Grid>
-
-        <Grid item xs={12}>
-          {
-            userJoined && !userOwns ? 
+            </Button> 
+          </Grid> : <></>
+        }
+    
+        {
+          userJoined && !userOwns ? 
+          <Grid item xs={12}>
             <Button
               fullWidth
               variant="outlined"
@@ -214,13 +164,13 @@ export default function EventCardExpanded({ event }){
                 deleteUserFromEvent(JSON.stringify(payload))
                 setUserLeftSuccessfully(true)
               }}
-            >Leave</Button>: <></>
-          }
-        </Grid>
-
-        <Grid item xs={12}>
-          {
-            userOwns ? 
+            >Leave</Button>
+          </Grid>: <></>
+        }
+      
+        {
+          userOwns ? 
+            <Grid item xs={12}>
             <Button
               fullWidth 
               variant="outlined"
@@ -228,35 +178,38 @@ export default function EventCardExpanded({ event }){
                 setIsEditing(true)
                 setEventEditedSuccessfully(false)
               }}
-            > Edit </Button> : <></>
-          }
-        </Grid>
-        
-        <Grid item xs={12}>
-          {
-            userOwns ? 
-            <DeleteButton
-              fullWidth
-              variant="outlined"
-              event_id={event.event_id}
-            /> : <></>
-          }
-        </Grid>
-      </Grid>
-      <Drawer
-        anchor="bottom"
-        open={isEditing}
-        onClose={()=>{
-          if (tempEventInfo != eventInfo && editingState.event_edited){
-            setEventEditedSuccessfully(true)
-            setEventInfo(tempEventInfo)
-          }
-          setIsEditing(false)
-          }}
-        sx={{zIndex: 'modal'}}
-      >
-      <h1>Edit event</h1>
-      <EditEventForm event={eventInfo} formAction={formAction} setTempEventInfo={setTempEventInfo} error_code={editingState.error_code}/>
+            > Edit </Button> 
+          </Grid>: <></>
+        }
+      
+        {
+          userOwns ? 
+          <Grid item xs={12}>
+          <DeleteButton
+            fullWidth
+            variant="outlined"
+            event_id={event.event_id}
+          /> 
+          </Grid> : <></>
+        }
+    </Grid>
+    <Drawer
+      anchor="bottom"
+      open={isEditing}
+      onClose={()=>{
+        if (tempEventInfo != eventInfo && editingState.event_edited){
+          setEventEditedSuccessfully(true)
+          setEventInfo(tempEventInfo)
+        }
+        setIsEditing(false)
+        }}
+      sx={{
+        zIndex: 'modal',
+        height: "80vh"
+      }}
+    >
+    <h1>Edit event</h1>
+    <EditEventForm eventID={event.event_id} eventInfo={eventInfo} formAction={formAction} setTempEventInfo={setTempEventInfo} error_code={editingState.error_code}/>
     </Drawer>
     </>
     
@@ -338,42 +291,3 @@ function DeleteButton({ event_id, ...props }){
   )
 }
 
-
-function EditButton({setIsEditing, setEventEditedSuccessfully, ...props}){
-  return (
-    <>
-      <Button
-        {...props}
-        onClick={()=>{
-          setEventEditedSuccessfully(false)
-          setIsEditing(true)
-        }}
-      >Edit</Button>
-      
-    </>
-  )
-}
-
-
-function EventEditor({formAction, isEditing, setIsEditing, setEventEditedSuccessfully, eventEditedSuccessfully, eventInfo, setEventInfo}){
-  const [tempEventInfo, setTempEventInfo] = useState(null)
-  
-
-  return(
-    <Drawer
-        anchor="bottom"
-        open={isEditing}
-        onClose={()=>{
-          if (editingState.event_edited){
-            setEventEditedSuccessfully(editingState.event_edited)
-            // setEventInfo(tempEventInfo)
-          }
-          setIsEditing(false)
-          }}
-        sx={{zIndex: 'modal'}}
-      >
-      <h1>Edit event</h1>
-      <EditEventForm event={eventInfo} formAction={formAction} setTempEventInfo={setTempEventInfo} />
-    </Drawer>
-  )
-}

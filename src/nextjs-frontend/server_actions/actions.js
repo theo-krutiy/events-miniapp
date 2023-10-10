@@ -39,10 +39,6 @@ export async function createEvent(prevState, payload) {
 
 
 export async function editEvent(prevState, payload){
-  console.log("prevState", prevState)
-  // console.log("event_id", event_id)
-  console.log("payload", payload)
-
   const url = "http://backend/events/" + JSON.parse(payload).event_id
   const response = await fetch(url, {
     method: "PATCH",
@@ -57,7 +53,6 @@ export async function editEvent(prevState, payload){
 
   if (response.status === 400){
     const result = await response.json()
-    console.log(result)
     return { 
       error_code: result.error_code,
       event_edited: false
@@ -106,7 +101,6 @@ export async function addUserToEvent(payload){
 
   if (result.status === 400){
     const response = await result.json()
-    console.log(response)
   }
  
 }
@@ -138,7 +132,6 @@ export async function deleteEvent(payload){
   })
   if (response.status === 400) {
     const result = await response.json()
-    console.log(result)
   }
 }
 

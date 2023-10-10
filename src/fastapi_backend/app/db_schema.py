@@ -1,7 +1,7 @@
 from sqlalchemy import (MetaData, Table, Column,
                         Integer, String,
                         TIMESTAMP, BigInteger, ForeignKey,
-                        PrimaryKeyConstraint)
+                        PrimaryKeyConstraint, CheckConstraint)
 
 
 metadata = MetaData()
@@ -13,13 +13,14 @@ events_table = Table(
     Column("event_id", BigInteger, primary_key=True),
     Column("event_name", String(256), nullable=False, unique=True),
     Column("description", String(1024)),
-    Column("curr_participants", Integer, default=1),
+    Column("curr_participants", Integer, CheckConstraint("curr_participants <= max_participants", name="no overflow"), default=1,),
     Column("max_participants", Integer, nullable=False),
     Column("owner_id", BigInteger, nullable=False),
     Column("event_time", TIMESTAMP(timezone=True), nullable=False),
     Column("category", String, nullable=False),
     Column("event_location", String, nullable=False),
-    Column("chat_link", String, nullable=False)
+    Column("chat_link", String, nullable=False),
+
 )
 
 event_participants = Table(

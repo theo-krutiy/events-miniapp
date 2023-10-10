@@ -18,7 +18,10 @@ async def validation_exception_handler(request, exc: RequestValidationError):
 
 async def db_exception_handler(request, exc: SQLAlchemyError):
     return JSONResponse(
-        content={"error_code": "db_unavailable"},
+        content={
+            "error_code": "db_unavailable",
+            "original_error": str(exc.orig)
+        },
         status_code=status.HTTP_503_SERVICE_UNAVAILABLE
     )
 

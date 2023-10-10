@@ -10,20 +10,20 @@ const error_code_mapping = {
   "event_name_not_unique": "Event with this name already exists!",
 }
 
-export default function EditEventForm({ event, setTempEventInfo, formAction, error_code }) {
-  const [eventName, setEventName] = useState(event.event_name);
-  const [eventCategory, setEventCategory] = useState(event.category);
-  const [eventLocation, setEventLocation] = useState(event.event_location);
-  const [eventTime, setEventTime] = useState(dayjs(event.event_time));
-  const [maxParticipants, setMaxParticipants] = useState(event.max_participants);
-  const [eventDescription, setEventDescription] = useState(event.description);
+export default function EditEventForm({ eventID, eventInfo, setTempEventInfo, formAction, error_code }) {
+  const [eventName, setEventName] = useState(eventInfo.event_name);
+  const [eventCategory, setEventCategory] = useState(eventInfo.category);
+  const [eventLocation, setEventLocation] = useState(eventInfo.event_location);
+  const [eventTime, setEventTime] = useState(dayjs(eventInfo.event_time));
+  const [maxParticipants, setMaxParticipants] = useState(eventInfo.max_participants);
+  const [eventDescription, setEventDescription] = useState(eventInfo.description);
   const categories = useContext(CategoriesContext)
 
   
   return (
     <form action={() => {
       const values = {
-        event_id: event.event_id,
+        event_id: eventID,
         event_name: eventName,
         event_location: eventLocation,
         category: eventCategory,

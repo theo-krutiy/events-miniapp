@@ -70,11 +70,9 @@ function Inner({ WebApp, children }){
 
   }, [WebApp])
 
-  console.log("valid data", validData)
 
 
   if (validData) {
-    // NEEDS_CHANGE
     const userData={
       user_id: validData.user.id,
       eventsJoined: eventsJoined,

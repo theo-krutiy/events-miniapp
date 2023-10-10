@@ -29,18 +29,18 @@ router = APIRouter()
 
 @router.get("/events", status_code=status.HTTP_200_OK)
 async def get_events(
-        category: str,
         event_location: str,
+        category: str = "all",
         order_by: str = "",
         descending: bool = False,
         search_query: str = None,
         page_size: int = 100,
         page_offset: int = 0,
 ):
-    stmt = select(events_table).where(
-        events_table.c.category == category and
-        events_table.c.location == event_location
-    )
+    stmt = select(events_table).where(events_table.c.event_location == event_location)
+    if category != "all":
+        stmt = stmt.where(events_table.c.category == category)
+
     if search_query is not None:
         stmt = stmt.where(
             events_table.c.event_name.icontains(search_query)
@@ -178,60 +178,71 @@ async def delete_event(event_id: int):
 
 class AddParticipant(BaseModel):
     participant_id: int
-    max_participants: int
 
 
 @router.post("/events/{event_id}/participants", status_code=status.HTTP_200_OK)
 async def add_participant(event_id: int, new_participant: AddParticipant):
-    participant_id, max_participants = (new_participant.participant_id,
-                                        new_participant.max_participants)
+    participant_id = new_participant.participant_id
     async with engine.begin() as conn:
         stmt = (
-            select(event_participants.c.participant_id)
-            .where(event_participants.c.event_id == event_id)
-        )
-        res = await conn.execute(stmt)
-        res = res.mappings().fetchall()
-        if len(res) == max_participants:
-            raise HandlerException(
-                "event_is_full",
-                status.HTTP_400_BAD_REQUEST
-            )
-        if participant_id in set(x["participant_id"] for x in res):
-            raise HandlerException(
-                "participant_already_in_event",
-                status.HTTP_400_BAD_REQUEST
-            )
-
-        stmt = (
-            insert(event_participants)
+            update(events_table)
+            .where(events_table.c.event_id == event_id)
             .values(
-                event_id=event_id,
-                participant_id=new_participant.participant_id
+                curr_participants=events_table.c.curr_participants + 1
             )
         )
         try:
             await conn.execute(stmt)
         except DBAPIError as e:
-            if "ForeignKeyViolationError" in str(e.orig):
+            if "CheckViolationError" in str(e.orig):
                 raise HandlerException(
-                    "event_doesnt_exist",
-                    status.HTTP_404_NOT_FOUND
+                    "event_is_full",
+                    status.HTTP_400_BAD_REQUEST
+                )
+            else:
+                raise e
+        stmt = (
+            insert(event_participants)
+            .values(
+                participant_id=participant_id,
+                event_id=event_id
+            )
+        )
+        try:
+            await conn.execute(stmt)
+        except DBAPIError as e:
+            if "UniqueViolation" in str(e.orig):
+                raise HandlerException(
+                    "participant_already_joined",
+                    status.HTTP_200_OK
                 )
             else:
                 raise e
 
-
 @router.delete("/events/{event_id}/participants/{participant_id}", status_code=status.HTTP_200_OK)
 async def delete_participant(event_id: int, participant_id: int):
-    stmt = (
+    async with engine.begin() as conn:
+        stmt = (
             delete(event_participants)
             .where(
-                event_participants.c.event_id == event_id and
+                event_participants.c.event_id == event_id
+            )
+            .where(
                 event_participants.c.participant_id == participant_id
             )
-    )
-    async with engine.begin() as conn:
+        )
+        result = await conn.execute(stmt)
+        if result.rowcount == 0:
+            raise HandlerException(
+                "participant_not_in_event",
+                status.HTTP_200_OK
+            )
+
+        stmt = (
+            update(events_table)
+            .where(events_table.c.event_id == event_id)
+            .values(curr_participants=events_table.c.curr_participants - 1)
+        )
         await conn.execute(stmt)
 
 
@@ -253,10 +264,10 @@ async def get_participants(event_id: int):
 async def validate_data(init_data: str):
     data_is_valid = False
     parsed_data = {}
-    # try:
-    data_is_valid, parsed_data = parse_validate_init_data(init_data)
-    # except:
-    #     pass
+    try:
+        data_is_valid, parsed_data = parse_validate_init_data(init_data)
+    except:
+        pass
 
     if not data_is_valid:
         raise HandlerException(
