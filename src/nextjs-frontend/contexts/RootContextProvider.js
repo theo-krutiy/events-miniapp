@@ -12,12 +12,12 @@ import Script from 'next/script'
 
 
 export default function RootContextProvider({ children }){
-  const [WebApp, SetWebApp] = useState({});
+  const [WebApp, setWebApp] = useState(null)
   return (
     <>
       <Script 
         src="https://telegram.org/js/telegram-web-app.js"
-        onLoad={()=>{SetWebApp(window.Telegram.WebApp)}}
+        onLoad={()=>{setWebApp(window.Telegram.WebApp)}}
       ></Script>
       <Inner WebApp={WebApp}>
         {children}
@@ -72,7 +72,8 @@ function Inner({ WebApp, children }){
 
 
 
-  if (validData) {
+  if (validData && WebApp) {
+    
     const userData={
       user_id: validData.user.id,
       eventsJoined: eventsJoined,
