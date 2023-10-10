@@ -79,7 +79,7 @@ export default function SearchBar({
         >
         <Chip
           clickable
-          color="secondary"
+          color="primary"
           onClick={()=>{setCategory(null)}}
           label={
             category ? category : "Choose category"
