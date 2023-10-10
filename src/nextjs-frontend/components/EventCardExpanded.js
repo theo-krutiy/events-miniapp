@@ -19,13 +19,13 @@ import Alert from '@mui/material/Alert'
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { TelegramContext } from '@/contexts/TelegramContext';
-import { useRouter } from 'next/router'
 
 
 export default function EventCardExpanded({ event, closeSelf }){
-  const router = useRouter()
   const WebApp = useContext(TelegramContext)
-  WebApp.BackButton.onClick(closeSelf())
+  WebApp.BackButton.show()
+
+  // WebApp.BackButton.onClick(closeSelf())
   
   const categories = useContext(CategoriesContext)
   
