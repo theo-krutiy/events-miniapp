@@ -120,17 +120,6 @@ export default function EventCardExpanded({ event, closeSelf }){
           </>
         }
       </Grid>
-      
-        {
-          userJoined ? 
-          <Grid item xs={12}>
-            <Button 
-            href={event.chat_link} 
-            fullWidth
-            variant="outlined"
-          >Go to chat</Button> 
-          </Grid> : <></>
-        }
 
         {
           !userJoined ? 
@@ -200,7 +189,6 @@ export default function EventCardExpanded({ event, closeSelf }){
     </Grid>
     <SwipeableDrawer
       anchor="bottom"
-      disableBackdropTransition
       open={isEditing}
       onClose={()=>{
         if (tempEventInfo != eventInfo && editingState.event_edited){
