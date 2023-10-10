@@ -19,7 +19,11 @@ export default function EventCard( { event } ){
   const [isExpanded, setIsExpanded] = useState(false)
   const categories = useContext(CategoriesContext)
   const borderWidth = 0
-  const closeCard = () => setIsExpanded(false)
+  const closeCard = () => {
+    WebApp.BackButton.offClick(WebApp.BackButton.currCallback)
+    WebApp.BackButton.onClick(WebApp.BackButton.prevCallback)
+    setIsExpanded(false)
+  }
   return (
     <>
       <Card
@@ -77,11 +81,6 @@ export default function EventCard( { event } ){
       </Card>
       <Dialog
         open={isExpanded}
-        onClose={()=>{
-          WebApp.BackButton.offClick(closeCard)
-          WebApp.BackButton.onClick(WebApp.BackButton.prevCallBack)
-
-        }}
         fullScreen
       > 
         <EventCardExpanded  event={event} closeSelf={closeCard} />        

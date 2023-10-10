@@ -11,10 +11,10 @@ export default function Page(){
   const router = useRouter()
   const WebApp = useContext(TelegramContext)
   WebApp.BackButton.show()
-  WebApp.BackButton.offClick(WebApp.BackButton.prevCallBack)
+  WebApp.BackButton.offClick(WebApp.BackButton.prevCallback)
   const BackButtonCallBack = ()=> router.push('/')
   WebApp.BackButton.onClick(BackButtonCallBack)
-  WebApp.BackButton.prevCallBack = BackButtonCallBack
+  WebApp.BackButton.prevCallback = BackButtonCallBack
 
   const user = useContext(UserContext)
   const eventsJoined = user.eventsJoined
