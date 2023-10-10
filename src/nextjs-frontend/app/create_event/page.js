@@ -14,7 +14,7 @@ export default function Page(){
   const router = useRouter()
   const WebApp = useContext(TelegramContext)
   WebApp.BackButton.show()
-  WebApp.BackButton.onClick(() => router.push('/'))
+  // WebApp.BackButton.onClick(() => router.push('/'))
 
   const initialState = {
     error_code: null, 
